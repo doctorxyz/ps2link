@@ -19,6 +19,7 @@
 #include "ioptrap.h"
 #include "loadcore.h"
 #include "modload.h"
+#include "poweroff.h"
 #include "ps2ip.h"
 #include "sifcmd.h"
 #include "sifman.h"
@@ -26,6 +27,5 @@
 #include "sysclib.h"
 #include "thbase.h"
 #include "thsemap.h"
-#include "poweroff.h"
 
 #endif /* IOP_IRX_IMPORTS_H */

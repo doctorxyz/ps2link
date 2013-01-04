@@ -22,8 +22,8 @@
 #include "ps2regs.h"
 #include "hostlink.h"
 
-//#define scr_printf(args...) printf(args)
-//#define init_scr() do { } while(0)
+//#define scr_printf2(args...) printf(args)
+//#define init_scr2() do { } while(0)
 #ifdef DEBUG
 #define dbgprintf(args...) printf(args)
 #else
@@ -185,11 +185,11 @@ pkoExecEE(pko_pkt_execee_req *cmd)
     dbgprintf("EE: Executing file %s...\n", cmd->argv);
     memcpy(path, cmd->argv, PKO_MAX_PATH);
 
-    scr_printf("Executing file %s...\n", path);
+    scr_printf2("Executing file %s...\n", path);
 
     pid = pkoLoadElf(path);
     if (pid < 0) {
-        scr_printf("Could not execute file %s\n", path);
+        scr_printf2("Could not execute file %s\n", path);
         return -1;
     }
 
@@ -264,7 +264,7 @@ pkoDumpMem(pko_pkt_mem_io *cmd) {
     int ret = 0;
    	size = ntohl(cmd->size);
     offset = ntohl(cmd->offset);
-	scr_printf("dump mem from 0x%x, size %d\n", 
+	scr_printf2("dump mem from 0x%x, size %d\n", 
 		ntohl(cmd->offset), ntohl(cmd->size)
 		);
     memcpy(path, cmd->argv, PKO_MAX_PATH);
@@ -303,7 +303,7 @@ pkoWriteMem(pko_pkt_mem_io *cmd) {
     int ret = 0;
    	size = ntohl(cmd->size);
     offset = ntohl(cmd->offset);
-	scr_printf("write mem to 0x%x, size %d\n", 
+	scr_printf2("write mem to 0x%x, size %d\n", 
 		ntohl(cmd->offset), ntohl(cmd->size)
 		);
     memcpy(path, cmd->argv, PKO_MAX_PATH);
@@ -651,7 +651,7 @@ pkoDumpReg(pko_pkt_dump_regs *cmd) {
 	if ( fd > 0 ) {
 		if ((ret = fioWrite(fd, regs, size)) > 0) {
 		} else {
-			scr_printf("EE: pkoDumpReg() fioWrite failed\n");
+			scr_printf2("EE: pkoDumpReg() fioWrite failed\n");
 			return fd;
 		}
 	}

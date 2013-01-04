@@ -1,10 +1,10 @@
 # Compilation variables
 
 # Set this to 1 to enable debug mode
-DEBUG = 0
+DEBUG = 1
 
 # Set this to 1 to build a highloading version, 0 for normal low version
-LOADHIGH = 0
+LOADHIGH = 1
 
 # Set this to 1 to build ps2link with all the needed IRX builtins
 BUILTIN_IRXS = 1
@@ -17,7 +17,7 @@ ZEROCOPY = 0
 
 # Set this to 1 to power off the ps2 when the reset button is tapped
 # otherwise it will try and reset ps2link
-PWOFFONRESET = 1
+PWOFFONRESET = 0
 
 # Set this to 1 to hook the kernel CreateThread/DeleteThread calls.
 # Note that this will cause problems when loading PS2LINK.ELF from PS2LINK...
@@ -120,6 +120,8 @@ release:
 	ps2mkisofs -o ps2link_$$VERSION.iso bin/; \
 	rm bin/dummy; \
 	tar -jcf ps2link_$$VERSION.tbz $(RELEASE_FILES) ps2link_$$VERSION.iso
+
+rebuild: clean all
 
 docs:
 	doxygen doxy.conf

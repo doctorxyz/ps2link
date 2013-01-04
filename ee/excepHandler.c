@@ -28,6 +28,8 @@ typedef union
 void pkoDebug(int cause, int badvaddr, int status, int epc, eeReg *regs);
 
 extern void pkoExceptionHandler(void);
+extern void init_scr2();
+extern void scr_printf2(const char *format, ...);
 
 ////////////////////////////////////////////////////////////////////////
 static const unsigned char regName[32][5] =
@@ -73,8 +75,8 @@ pkoDebug(int cause, int badvaddr, int status, int epc, eeReg *regs)
 
     if (excepscrdump)
     {
-        init_scr();
-        excpPrintf = scr_printf;
+        init_scr2();
+        excpPrintf = scr_printf2;
     }
 	else excpPrintf = (void*)printf;
 
@@ -117,8 +119,8 @@ void iopException(int cause, int badvaddr, int status, int epc, u32 *regs, int r
 
     if(excepscrdump)
     {
-        init_scr();
-        excpPrintf = scr_printf;
+        init_scr2();
+        excpPrintf = scr_printf2;
     }
 	else excpPrintf = (void*)printf;
    

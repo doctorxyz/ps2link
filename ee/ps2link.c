@@ -26,11 +26,11 @@
 extern int initCmdRpc(void);
 extern void pkoReset(void);
 
-#define WELCOME_STRING "Welcome to ps2link v1.51\n"
+#define WELCOME_STRING "Welcome to ps2link v1.53 by doctorxyz\n(It also works on HDTVs non-compatible with low res SD interlaced vmodes)\n"
 
 #ifdef DEBUG
 #define dbgprintf(args...) printf(args)
-#define dbgscr_printf(args...) scr_printf(args)
+#define dbgscr_printf(args...) scr_printf2(args)
 #else
 #define dbgprintf(args...) do { } while(0)
 #define dbgscr_printf(args...) do { } while(0)
@@ -101,6 +101,9 @@ int if_conf_len = 0;
 char ip[16] __attribute__((aligned(16))) = "192.168.0.10";
 char netmask[16] __attribute__((aligned(16))) = "255.255.255.0";
 char gw[16] __attribute__((aligned(16))) = "192.168.0.1";
+
+#include <debug2.h>
+#include <scr_printf2.c>
 
 ////////////////////////////////////////////////////////////////////////
 // Parse network configuration from IPCONFIG.DAT
@@ -196,7 +199,7 @@ getIpConfig(void)
 
     if (fd < 0)
     {
-        scr_printf("Could not find IPCONFIG.DAT, using defaults\n"
+        scr_printf2("Could not find IPCONFIG.DAT, using defaults\n"
                    "Net config: %s  %s  %s\n", ip, netmask, gw);
         // Set defaults
         memset(if_conf, 0x00, IPCONF_MAX_LEN);
@@ -236,19 +239,19 @@ getIpConfig(void)
         i++;
     }
 
-    scr_printf("Net config: ");
+    scr_printf2("Net config: ");
     for (t = 0, i = 0; t < 3; t++) {
         strncpy(&if_conf[i], &buf[i], 15);
-        scr_printf("%s  ", &if_conf[i]);
+        scr_printf2("%s  ", &if_conf[i]);
         i += strlen(&if_conf[i]) + 1;
     }
-    scr_printf("\n");
+    scr_printf2("\n");
     // get extra config filename
 
 #ifndef USE_CACHED_CFG
 	if(getBufferValue(fExtraConfig, buf, len, "EXTRACNF") == 0)
 	{
-		scr_printf("extra conf: %s\n", fExtraConfig);
+		scr_printf2("extra conf: %s\n", fExtraConfig);
 
 		load_extra_conf = 1;
 	}
@@ -272,7 +275,7 @@ getExtraConfig()
 
 	if ( fd < 0 )
 	{
-        scr_printf("failed to open extra conf file\n");
+        scr_printf2("failed to open extra conf file\n");
         return;
     }
 
@@ -290,7 +293,7 @@ getExtraConfig()
             break;
         }
         ptr[ptr2-ptr] = 0;
-        scr_printf("loading %s\n", ptr);
+        scr_printf2("loading %s\n", ptr);
         pkoLoadModule(ptr, 0, NULL);
         ptr = ptr2+1;
     }
@@ -307,7 +310,7 @@ pkoLoadModule(char *path, int argc, char *argv)
 
     ret = SifLoadModule(path, argc, argv);
     if (ret < 0) {
-        scr_printf("Could not load module %s: %d\n", path, ret);
+        scr_printf2("Could not load module %s: %d\n", path, ret);
         SleepThread();
     }
 	dbgscr_printf("[%d] returned\n", ret);
@@ -424,12 +427,12 @@ loadModules(void)
     else
 	 {
 	    i=0;
-	    scr_printf("Net config: ");
+	    scr_printf2("Net config: ");
        for (t = 0, i = 0; t < 3; t++) {
-          scr_printf("%s  ", &if_conf[i]);
+          scr_printf2("%s  ", &if_conf[i]);
           i += strlen(&if_conf[i]) + 1;
        }
-       scr_printf("\n");
+       scr_printf2("\n");
     }
 
 #else
@@ -540,7 +543,7 @@ setPathInfo(char *path)
         if (ptr == NULL) {
             ptr = strrchr(elfPath, ':');
             if (ptr == NULL) {
-                scr_printf("Did not find path (%s)!\n", path);
+                scr_printf2("Did not find path (%s)!\n", path);
                 SleepThread();
             }
         }
@@ -614,20 +617,22 @@ restartIOP()
         cdvdInit(CDVD_EXIT);
         cdvdExit();
     }
-    fioExit();
-    SifExitIopHeap();
-    SifLoadFileExit();
-    SifExitRpc();
 
     dbgscr_printf("reset iop\n");
     SifIopReset(imgcmd, 0);
     while (SifIopSync()) ;
-
+    fioExit();
+    SifExitIopHeap();
+    SifLoadFileExit();
+    SifExitRpc();
+    
     dbgscr_printf("rpc init\n");
     SifInitRpc(0);
+	FlushCache(0);
+	FlushCache(2);
     cdvdInit(CDVD_INIT_NOWAIT);
 
-    scr_printf("Initializing...\n");
+    scr_printf2("Initializing...\n");
     sio_printf("Initializing...\n");
     sbv_patch_enable_lmb();
     sbv_patch_disable_prefix_check();
@@ -751,13 +756,14 @@ main(int argc, char *argv[])
     //    int ret;
     char *bootPath;
 
-    init_scr();
-    scr_printf(WELCOME_STRING);
+    //init_scr2();
+    init_scr3();
+    scr_printf2(WELCOME_STRING);
 #ifdef _LOADHIGHVER
-    scr_printf("Highload version\n");
+    scr_printf2("Highload version\n");
 #endif
 
-    scr_printf("ps2link loaded at 0x%08X-0x%08X\n", ((u32) _start) - 8, (u32) &_end);
+    scr_printf2("ps2link loaded at 0x%08X-0x%08X\n", ((u32) _start) - 8, (u32) &_end);
 
     installExceptionHandlers();
 
@@ -791,46 +797,43 @@ main(int argc, char *argv[])
 
     if (!strncmp(bootPath, "cdrom", strlen("cdrom"))) {
         // Booting from cd
-        scr_printf("Booting from cdrom (%s)\n", bootPath);
+        scr_printf2("Booting from cdrom (%s)\n", bootPath);
         boot = B_CD;
         cdvdInit(CDVD_INIT_NOWAIT);
     }
     else if(!strncmp(bootPath, "mc", strlen("mc"))) {
         // Booting from my mc
-        scr_printf("Booting from mc dir (%s)\n", bootPath);
+        scr_printf2("Booting from mc dir (%s)\n", bootPath);
         boot = B_MC;
     }
     else if(!strncmp(bootPath, "host", strlen("host"))) {
         // Host
-        scr_printf("Booting from host (%s)\n", bootPath);
+        scr_printf2("Booting from host (%s)\n", bootPath);
         boot = B_HOST;
     }
     else if(!strncmp(bootPath, "rom0:OSDSYS", strlen("rom0:OSDSYS"))) {
         // From CC's firmware
-	scr_printf("Booting as CC firmware\n");
+	scr_printf2("Booting as CC firmware\n");
 	boot = B_CC;
     }
     else {
         // Unknown
-        scr_printf("Booting from unrecognized place %s\n", bootPath);
+        scr_printf2("Booting from unrecognized place %s\n", bootPath);
         boot = B_UNKN;
     }
 
 #ifdef USE_CACHED_CFG
     if(if_conf_len==0)
     {
-       scr_printf("Initial boot, will load config then reset\n");
-		 if(boot == B_MC || boot == B_CC)
-			 restartIOP();
+		scr_printf2("Initial boot, will load config then reset\n");
+		if(boot == B_MC || boot == B_CC)
+			restartIOP();
+		getIpConfig();
+		pkoReset();
 
-       getIpConfig();
-
-		 pkoReset();
- 	 }
-	 else
-	 {
-	 	 scr_printf("Using cached config\n");
-	 }
+	}
+	else
+	 	 scr_printf2("Using cached config\n");
 #endif
 
     // System initalisation
@@ -854,7 +857,7 @@ main(int argc, char *argv[])
     dbgscr_printf("clearing spu\n");
     if (SifLoadModule("rom0:CLEARSPU", 0, NULL)<0)
     {
-        scr_printf("rom0:CLEARSPU failed\n");
+        scr_printf2("rom0:CLEARSPU failed\n");
         sio_printf("rom0:CLEARSPU failed\n");
     }
 */
@@ -866,7 +869,7 @@ main(int argc, char *argv[])
 	   getExtraConfig();
 	}
 
-    scr_printf("Ready\n");
+    scr_printf2("Ready\n");
     sio_printf("Ready\n");
 
 //    SleepThread();
