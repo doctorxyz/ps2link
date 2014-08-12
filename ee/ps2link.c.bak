@@ -607,8 +607,7 @@ wipeUserMemLoadHigh(void)
 }
 
 
-void
-restartIOP()
+void restartIOP()
 {
     if (boot == B_CD) {
         cdvdInit(CDVD_EXIT);

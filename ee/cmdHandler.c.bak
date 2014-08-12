@@ -22,6 +22,12 @@
 #include "ps2regs.h"
 #include "hostlink.h"
 
+#include <iopheap.h>
+#include <sbv_patches.h>
+#include <libcdvd.h>
+
+//#define scr_printf2(args...) printf(args)
+//#define init_scr2() do { } while(0)
 void scr_printf2(const char *, ...) __attribute__((format(printf,1,2)));
 
 

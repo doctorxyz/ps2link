@@ -10,7 +10,7 @@ LOADHIGH = 1
 BUILTIN_IRXS = 1
 
 # Set this to 1 to enable caching of config files
-CACHED_CFG = 1
+CACHED_CFG = 0
 
 # Set this to 1 to enable zero-copy on fileio writes.
 ZEROCOPY = 0

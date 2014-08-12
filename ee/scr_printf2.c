@@ -456,10 +456,6 @@ void init_scr3()
 			2559,	// Display area width
 			447);		// Display area height
 
-	GS_SET_BGCOLOR(	0,		// Red
-			0,	// Green
-			255);	// Blue
-
     EIntr(); //enable interrupts
 	delay(10);
 	scr_clear();
