@@ -735,10 +735,6 @@ pkoReset(void)
     SifInitRpc(0);
 
 	GS_BGCOLOUR = 0x0000FF;	//Red
-	// Issue
-	// SCPH-70012 MCB 1.8c -> Ok 
-	// SCPH-79001 Matrix Infinity v1.93 -> There was an issue, when sending RESET from ps2client/ConsoleLink (only on the 1st time): PS2 hangs on next line for almost 1 min.
-	// but the issue has been disappeared as soon as I started to use SifIopReset(NULL, 0) on ps2link.c restartIOP() function!
 	cdvdInit(CDVD_INIT_NOWAIT);
 	GS_BGCOLOUR = 0x00FF00;	//Lime
 	cdvdInit(CDVD_EXIT);

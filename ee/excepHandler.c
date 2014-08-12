@@ -157,6 +157,8 @@ installExceptionHandlers(void)
 {
     int i;
 
+	SetVCommonHandler(8, (void *)0x80000280);	//TPIIG Fix
+
 	// Skip exception #8 (syscall) & 9 (breakpoint)
     for (i = 1; i < 4; i++) {
         SetVTLBRefillHandler(i, pkoExceptionHandler);

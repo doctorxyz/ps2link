@@ -26,7 +26,7 @@
 extern int initCmdRpc(void);
 extern void pkoReset(void);
 
-#define WELCOME_STRING "Welcome to ps2link v1.54 by doctorxyz\n(It also works on HDTVs non-compatible with low res SD interlaced vmodes)\n"
+#define WELCOME_STRING "Welcome to ps2link v1.55 by doctorxyz\n(Now working on all HDTVs, and PS2 Slims too!)\n"
 
 #ifdef DEBUG
 #define dbgprintf(args...) printf(args)
