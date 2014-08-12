@@ -71,8 +71,6 @@ static unsigned int _binary_ioptrap_irx_size, _binary_ps2dev9_irx_size, \
 					_binary_ps2link_irx_size;
 #endif
 
-char *imgcmd = "rom0:UDNL rom0:EELOADCNF";
-
 // Flags for which type of boot
 #define B_CD 1
 #define B_MC 2
@@ -616,7 +614,7 @@ restartIOP()
     }
 
     dbgscr_printf("reset iop\n");
-    SifIopReset(imgcmd, 0);
+    SifIopReset(NULL, 0);
     while (SifIopSync()) ;
     fioExit();
     SifExitIopHeap();
